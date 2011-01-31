@@ -1,6 +1,3 @@
-$LOAD_PATH.unshift './lib'
-require 'yasm'
-
 class VendingMachine
   include Yasm::Context
 

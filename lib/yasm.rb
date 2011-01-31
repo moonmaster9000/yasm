@@ -1,3 +1,4 @@
+require 'yasm/manager'
 require 'yasm/version'
 require 'yasm/state'
 require 'yasm/action'

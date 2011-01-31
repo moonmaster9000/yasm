@@ -3,22 +3,16 @@ require 'spec_helper'
 describe Yasm::Context do
   context "when included in a class" do
     before do
-      class VendingMachine
-        include Yasm::Context
-      end
-
-      class Waiting
-        include Yasm::State
-      end
-
-      class Vending
-        include Yasm::State
-      end
-
-      class NotAState
-      end
     end
 
+    describe "#do! instance method" do      
+      it "should pass the context and all actions to the Yasm::Manager ##execute method" do
+        vending_machine = VendingMachine.new
+        Yasm::Manager.should_receive(:execute).with(:context => vending_machine, :actions => [InputMoney, Vend]).and_return nil
+        vending_machine.do! InputMoney, Vend
+      end
+    end
+    
     describe "##states class method" do
       context "called with arguments" do
         it "should verify that all of the parameters passed to it are classes that include Yasm::State" do

@@ -19,5 +19,9 @@ module Yasm
     def states
       self.class.states
     end
+
+    def do!(*actions)
+      Yasm::Manager.execute :context => self, :actions => actions
+    end
   end
 end

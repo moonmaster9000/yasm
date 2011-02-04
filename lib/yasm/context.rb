@@ -6,22 +6,16 @@ module Yasm
     end
 
     module ClassMethods
-      attr_accessor :possible_states
-      
-      def states(*args)
-        return self.possible_states.dup if args.empty?
-        raise "You may only pass states that include Yasm::State to the `states` class method" if args.any? {|s| !(s.ancestors.include? Yasm::State)}
+      attr_accessor :default_state
 
-        self.possible_states = args.dup
+      def start(state_klass)
+        raise ArgumentError, "You may only pass a descendent of Yasm::State to the ##start method." unless state_klass.ancestors.include?(Yasm::State)
+        self.default_state = state_klass
       end
     end
 
-    def states
-      self.class.states
-    end
-
     def do!(*actions)
-      Yasm::Manager.execute :context => self, :actions => actions
+      #Yasm::Manager.execute :context => self, :actions => actions
     end
   end
 end

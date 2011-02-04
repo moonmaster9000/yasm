@@ -14,11 +14,10 @@ describe Yasm::Manager do
     end
 
     it "should verify that the actions are Yasm::Action's" do
-       proc { Yasm::Manager.execute :context => VendingMachine.new, :actions => InputMoney, NotAnAction }.should raise_exception("You must pass classes or instances that have Yasm::Action as an ancestor to ##execute")
+       proc { Yasm::Manager.execute :context => VendingMachine.new, :actions => [InputMoney, NotAnAction] }.should raise_exception("You must pass classes or instances that have Yasm::Action as an ancestor to ##execute")
     end
 
     it "should apply each action, sequentially, to the context" do
-      Yasm::Manager.should_receive(:execute_action).with(
     end
   end
 end

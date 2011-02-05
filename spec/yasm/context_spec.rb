@@ -12,34 +12,40 @@ describe Yasm::Context do
       end
     end
     
-    describe "##included" do
-      it "should extend the base with Yasm::Context::ClassMethods" do
-        VendingMachine.ancestors.should be_include(Yasm::Context)
+    describe "##state" do
+      it "should require something that can be converted to a symbol" do
+        proc { VendingMachine.state(nil) }.should raise_exception(ArgumentError, "The state name must respond to `to_sym`")
       end
 
-      it "should create a `default_state` class accessor" do
-        VendingMachine.respond_to?(:default_state).should be_true
-        VendingMachine.respond_to?(:default_state=).should be_true
+      it "should create a new state configuration" do
+        VendingMachine.state_configurations[:electricity].should be_nil
+        class On; include Yasm::State; end
+        VendingMachine.state(:electricity) { start On }
+        VendingMachine.state_configurations[:electricity].should_not be_nil
+        VendingMachine.state_configurations[:electricity].start_state.should == On
+      end
+
+      it "should instance_eval the block on the new state configuration" do
+        VendingMachine.state_configurations[:power].should be_nil
+        class On; include Yasm::State; end
+        VendingMachine.state(:power) { start On }
+        VendingMachine.state_configurations[:power].should_not be_nil
+        VendingMachine.state_configurations[:power].start_state.should == On
+      end
+
+      it "should create an instance method that returns the state" do
+        class On; include Yasm::State; end
+        VendingMachine.state(:light) { start On }
+        VendingMachine.new.light.class.should == On
       end
     end
     
     describe "##start" do
       context "when called directly on the context" do
-        it "should require a single argument" do
-          proc { VendingMachine.start }.should raise_exception(ArgumentError)
-          proc { VendingMachine.start Waiting }.should_not raise_exception(ArgumentError)
-          proc { VendingMachine.start Waiting, :second_argument}.should raise_exception(ArgumentError)
-        end
-
-        it "should verify that the argument is a descendent of Yasm::State" do
-          proc { VendingMachine.start Hash }.should raise_exception("You may only pass a descendent of Yasm::State to the ##start method.")
-          proc { VendingMachine.start Waiting }.should_not raise_exception("You may only pass a descendent of Yasm::State to the ##start method.")
-        end
-
-        it "should store the state in the `default_state` class instance variable" do
-          VendingMachine.default_state = nil
+        it "should store the state as the start state of the anonymous state configuration" do
+          VendingMachine.state_configurations.anonymous.start_state.should == nil
           VendingMachine.start Waiting 
-          VendingMachine.default_state.should == Waiting
+          VendingMachine.state_configurations.anonymous.start_state.should == Waiting
         end
       end
     end

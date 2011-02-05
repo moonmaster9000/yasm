@@ -1,5 +1,25 @@
 $LOAD_PATH.unshift './lib'
 require 'yasm'
+
+# class VendingMachine
+#   include Yasm::Context
+# 
+#   start Waiting
+# end
+# 
+# class Waiting
+#   include Yasm::State
+# end
+# 
+# class Vending
+# end
+# 
+# class InputMoney
+#   include Yasm::Action
+#   
+#   triggers Vending
+# end
+# 
 # 
 # class VendingMachine
 #   include Yasm::Context

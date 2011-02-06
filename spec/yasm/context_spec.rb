@@ -36,7 +36,7 @@ describe Yasm::Context do
       it "should create an instance method that returns the state" do
         class On; include Yasm::State; end
         VendingMachine.state(:light) { start On }
-        VendingMachine.new.light.current_state.class.should == On
+        VendingMachine.new.light.state.class.should == On
       end
     end
     

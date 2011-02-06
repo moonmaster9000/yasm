@@ -16,10 +16,11 @@ module Yasm
         raise ArgumentError, "The state name must respond to `to_sym`" unless name.respond_to?(:to_sym)
         name = name.to_sym
         state_configurations[name] = StateConfiguration.new 
-        state_configurations[name].instance_eval &block if block
-        define_method(name) do
-          state_container name
-        end
+        state_configurations[name].instance_eval &block
+        
+        raise "You must provide a start state for #{name}" unless state_configurations[name].start_state
+
+        define_method(name) { state_container name }
       end
 
       # state configuration metadata
@@ -29,12 +30,12 @@ module Yasm
     end
 
     def do!(*actions)
-      #Yasm::Manager.execute :context => self, :actions => actions
+      state.do! *actions
     end
 
     def state
-      raise "This class has no anonymous state" unless self.class.state_configurations[ANONYMOUS_STATE].start_state      
-      loaded_state ANONYMOUS_STATE
+      raise "This class has no anonymous state" unless self.class.state_configurations[ANONYMOUS_STATE] 
+      state_container ANONYMOUS_STATE
     end
 
     private

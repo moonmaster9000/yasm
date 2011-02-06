@@ -48,7 +48,7 @@ module Yasm
         state_containers[id] = 
           StateContainer.new(
             :context => self, 
-            :state   => self.class.state_configurations[id].start_state.new
+            :state   => self.class.state_configurations[id].start_state.to_class.new
           )
       end
 

@@ -5,12 +5,33 @@ describe Yasm::Manager do
     before do
       class VendingMachine
         include Yasm::Context
-        start On
+        
+        start :on
       end
-      class On; include Yasm::State; end
-      class Off; include Yasm::State; end
-      class Unplug; include Yasm::Action; triggers Off; end
-      class PlugIn; include Yasm::Action; triggers On; end
+
+      class Unplug
+        include Yasm::Action
+        
+        triggers :off
+      end
+
+      class PlugIn
+        include Yasm::Action
+        
+        triggers :on
+      end
+
+      class On
+        include Yasm::State
+        
+        actions :unplug
+      end
+
+      class Off
+        include Yasm::State
+        
+        actions :plug_in
+      end
       
       @vending_machine = VendingMachine.new
     end
@@ -23,6 +44,18 @@ describe Yasm::Manager do
 
       Yasm::Manager.execute :context => @vending_machine, :state_container => @vending_machine.state, :actions => [PlugIn]
       @vending_machine.state.value.class.should == On
+    end
+
+    it "should verify that the action is possible given the current state" do
+      @vending_machine.state.value.class.should == On
+      
+      proc { 
+        Yasm::Manager.execute(
+          :context => @vending_machine, 
+          :state_container => @vending_machine.state, 
+          :actions => [PlugIn]
+        )
+      }.should raise_exception("We're sorry, but the action `PlugIn` is not possible given the current state `On`.")
     end
   end
 end

@@ -11,7 +11,12 @@ module Yasm
         action         = action.new if action.class == Class
         action.context = context
         
-        state_container.state = action.triggers if action.triggers
+        # Verify that the action is possible given the current state
+        unless state_container.state.class.is_allowed?(action.class)
+          raise "We're sorry, but the action `#{action.class}` is not possible given the current state `#{state_container.state}`." 
+        end
+
+        state_container.state = action.triggers.to_class if action.triggers
         action.execute 
       end
     end

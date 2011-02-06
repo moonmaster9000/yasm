@@ -16,11 +16,7 @@ module Yasm
         state_configurations[name] = StateConfiguration.new 
         state_configurations[name].instance_eval &block if block
         define_method(name) do
-          unless states[name]
-            states[name] ||= self.class.state_configurations[name].start_state.new 
-            states[name].context = self
-          end
-          states[name]
+          loaded_state name
         end
       end
 
@@ -34,17 +30,22 @@ module Yasm
     end
 
     def state
-      unless states[:yasm_anonymous_state]
-        states[:yasm_anonymous_state] ||= self.class.state_configurations[:yasm_anonymous_state].start_state.new 
-        states[:yasm_anonymous_state].context = self
-      end
-
-      states[:yasm_anonymous_state]
+      raise "This class has no anonymous state" unless self.class.state_configurations.anonymous.start_state      
+      loaded_state ANONYMOUS_STATE
     end
 
     private
     def states
       @states ||= {}
+    end
+
+    def loaded_state(id)
+      unless states[id]
+        states[id] ||= self.class.state_configurations[id].start_state.new 
+        states[id].context = self
+      end
+
+      states[id]
     end
   end
 end

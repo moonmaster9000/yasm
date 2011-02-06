@@ -1,6 +1,6 @@
 module Yasm
   module Action
-    attr_accessor :context
+    attr_accessor :context, :state_container
 
     def self.included(base)
       base.extend ClassMethods
@@ -16,6 +16,10 @@ module Yasm
 
     def triggers
       self.class.trigger_state
+    end
+
+    def trigger(state)
+      Yasm::Manager.change_state :to => state, :on => state_container
     end
 
     def execute

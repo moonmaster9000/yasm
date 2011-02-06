@@ -16,7 +16,7 @@ it vends the selection. Let's start off with a really simple model of this:
     class VendingMachine
       include Yasm::Context
 
-      start Waiting
+      start :waiting
     end
 
     class Waiting; include Yasm::State; end
@@ -34,13 +34,13 @@ So, how do we use this vending machine? We'll need to create some actions first:
     class MakeSelection
       include Yasm::Action
       
-      triggers Vending
+      triggers :vending
     end
 
     class RetrieveSelection
       include Yasm::Action
       
-      triggers Waiting
+      triggers :waiting
     end
 
 And now we can run a simulation:

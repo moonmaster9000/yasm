@@ -56,6 +56,14 @@ describe Yasm::Manager do
           :actions => [PlugIn]
         )
       }.should raise_exception("We're sorry, but the action `PlugIn` is not possible given the current state `On`.")
+
+      proc { 
+        Yasm::Manager.execute(
+          :context => @vending_machine, 
+          :state_container => @vending_machine.state, 
+          :actions => [Unplug]
+        )
+      }.should_not raise_exception
     end
   end
 end

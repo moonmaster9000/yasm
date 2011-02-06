@@ -68,13 +68,13 @@ our states, using the actions macro:
     class Waiting
       include Yasm::State
 
-      actions InputMoney, MakeSelection
+      actions :input_money, :make_selection
     end
 
     class Vending
       include Yasm::State
       
-      actions RetrieveSelection
+      actions :retrieve_selection
     end
 
 Now, when the vending machine is in the `Waiting` state, the only actions we can apply to it are `InputMoney` and `MakeSelection`.

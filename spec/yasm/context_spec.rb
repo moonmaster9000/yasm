@@ -36,7 +36,7 @@ describe Yasm::Context do
       it "should create an instance method that returns the state" do
         class On; include Yasm::State; end
         VendingMachine.state(:light) { start On }
-        VendingMachine.new.light.class.should == On
+        VendingMachine.new.light.current_state.class.should == On
       end
     end
     
@@ -104,3 +104,48 @@ describe Yasm::Context do
     # end
   end
 end
+# 
+# 
+# class VendingMachine
+#   include Yasm::Context
+#   
+#   start Waiting
+# 
+#   state :power do
+#     start On
+#   end
+# end
+# 
+# class On
+#   include Yasm::State
+# end
+# 
+# class Off
+#   include Yasm::State
+# end
+# 
+# class Unplug
+#   include Yasm::Action
+# 
+#   trigger Off
+# end
+# 
+# class PlugIn
+#   include Yasm::Action
+# 
+#   trigger On
+# end
+# 
+# v = VendingMachine.new
+# 
+# p v.state.current_state #==> Waiting
+# v.do! InputMoney
+# p v.state.current_state #==> Waiting
+# v.do! MakeSelection
+# p v.state.current_state #==> Vending
+# v.do! TakeSelection     
+# p v.state.current_state #==> Waiting
+# 
+# puts v.power.current_state #==> On
+# v.power.do! Unplug
+# puts v.power.state #==> Off

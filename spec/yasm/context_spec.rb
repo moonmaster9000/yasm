@@ -43,9 +43,9 @@ describe Yasm::Context do
     describe "##start" do
       context "when called directly on the context" do
         it "should store the state as the start state of the anonymous state configuration" do
-          VendingMachine.state_configurations.anonymous.start_state.should == nil
+          VendingMachine.state_configurations[Yasm::Context::ANONYMOUS_STATE].should be_nil
           VendingMachine.start Waiting 
-          VendingMachine.state_configurations.anonymous.start_state.should == Waiting
+          VendingMachine.state_configurations[Yasm::Context::ANONYMOUS_STATE].start_state.should == Waiting
         end
       end
     end

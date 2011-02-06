@@ -7,7 +7,8 @@ module Yasm
 
     module ClassMethods
       def start(state)
-        state_configurations.anonymous.start state
+        state_configurations[ANONYMOUS_STATE] = StateConfiguration.new
+        state_configurations[ANONYMOUS_STATE].start state
       end
 
       def state(name, &block)
@@ -21,7 +22,7 @@ module Yasm
       end
 
       def state_configurations
-        @state_configurations ||= StateConfigurations.new
+        @state_configurations ||= {}
       end
     end
 
@@ -30,7 +31,7 @@ module Yasm
     end
 
     def state
-      raise "This class has no anonymous state" unless self.class.state_configurations.anonymous.start_state      
+      raise "This class has no anonymous state" unless self.class.state_configurations[ANONYMOUS_STATE].start_state      
       loaded_state ANONYMOUS_STATE
     end
 

@@ -10,6 +10,10 @@ describe Yasm::Context do
       class Waiting
         include Yasm::State
       end
+
+      class InputMoney
+        include Yasm::Action
+      end
     end
     
     describe "##state" do
@@ -47,6 +51,14 @@ describe Yasm::Context do
           VendingMachine.start :waiting 
           VendingMachine.state_configurations[Yasm::Context::ANONYMOUS_STATE].start_state.should == :waiting
         end
+      end
+    end
+
+    describe "#do!" do
+      it "should pass all actions passed to it off to the anonymous state_container #do! method" do
+        v = VendingMachine.new
+        v.state.should_receive(:do!).with(InputMoney, InputMoney)
+        v.do! InputMoney, InputMoney
       end
     end
   end

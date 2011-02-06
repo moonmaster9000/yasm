@@ -83,4 +83,4 @@ Now, when the vending machine is in the `Waiting` state, the only actions we can
 
 ## PUBLIC DOMAIN
 
-This software is committed to the public domain. No license. No copyright. 
+This software is committed to the public domain. No license. No copyright. DO ANYTHING! 

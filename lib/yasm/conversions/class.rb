@@ -4,6 +4,10 @@ module Yasm
       def to_sym
         self.to_s.underscore.to_sym
       end
+
+      def to_class
+        self
+      end
     end
   end
 end

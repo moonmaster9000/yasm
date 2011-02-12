@@ -21,16 +21,28 @@ describe Yasm::Manager do
         triggers :on
       end
 
+      class Destroy
+        include Yasm::Action
+
+        triggers :destroyed
+      end
+
       class On
         include Yasm::State
         
-        actions :unplug
+        actions :unplug, :destroy
       end
 
       class Off
         include Yasm::State
         
-        actions :plug_in
+        actions :plug_in, :destroy
+      end
+
+      class Destroyed
+        include Yasm::State
+
+        final!
       end
       
       @vending_machine = VendingMachine.new
@@ -64,6 +76,14 @@ describe Yasm::Manager do
           :actions => [Unplug]
         )
       }.should_not raise_exception
+
+      proc {
+        Yasm::Manager.execute(
+          :context => @vending_machine,
+          :state_container => @vending_machine.state,
+          :actions => [Destroy, PlugIn]
+        )
+      }.should raise_exception("We're sorry, but the current state `Destroyed` is final. It does not accept any actions.") 
     end
   end
 end

@@ -20,8 +20,11 @@ module Yasm
         action.context          = context
         action.state_container  = state_container
         
+
         # Verify that the action is possible given the current state
-        unless state_container.state.class.is_allowed?(action.class)
+        if state_container.state.class.final?
+          raise "We're sorry, but the current state `#{state_container.state}` is final. It does not accept any actions."
+        elsif !state_container.state.class.is_allowed?(action.class)
           raise "We're sorry, but the action `#{action.class}` is not possible given the current state `#{state_container.state}`." 
         end
 

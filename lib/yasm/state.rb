@@ -17,6 +17,14 @@ module Yasm
         return true if @allowed_actions.nil?
         @allowed_actions.include? action.to_sym
       end
+
+      def final!
+        @allowed_actions = []
+      end
+
+      def final?
+        @allowed_actions == []
+      end
     end
 
     def to_s

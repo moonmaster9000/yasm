@@ -2,6 +2,11 @@
 
 Pronounced "yaz-um."
 
+
+## Install?
+
+    $ gem install yasm
+
 ## Why?
 
 In a state machine, there are states, contexts, and actions. Actions have side-effects, conditional logic, etc. States have various allowable actions. 
@@ -192,21 +197,29 @@ pay for our selection).
       #==> Waiting
 
 
-## Time Constraints
+## End states
 
-When you make a selection, a real vending machine takes a few seconds to actually vend the selection. If you attempt to retrieve your selection
-before the machine has finished vending it, you will fail. Plus, you'll look stupid. 
+Sometimes, a state is final. Like, what if, out of frustration, you threw the vending machine off the top of a 10 story building? It's probably not going
+to work again after that. You can use the `final!` macro on a state to denote that this is the end.
 
-How can we model these real world time constraints? We can add time constraints onto our states using the `time_constraints` macro:
+    class TossOffBuilding
+      include Yasm::Action
 
-    class Vending
+      triggers :obliterated
+    end
+
+    class Obliterated
       include Yasm::State
 
-      time_constraints do
-        minimum 10.seconds
-        maximum 60.seconds, :action => DisplayError.new("Sorry, you're snickers bar got stuck.")
-      end
+      final!
     end
+
+    vending_machine = VendingMachine.new
+    
+    vending_machine.do! TossOffBuilding
+
+    vending_machine.do! MakeSelection.new(SnickersBar)
+    #==> RuntimeError: We're sorry, but the current state `Obliterated` is final. It does not accept any actions 
 
 
 

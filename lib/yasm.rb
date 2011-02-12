@@ -1,4 +1,5 @@
 require 'active_support/core_ext/string'
+require 'yasm/exceptions'
 require 'yasm/conversions'
 require 'yasm/manager'
 require 'yasm/version'

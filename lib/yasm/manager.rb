@@ -23,9 +23,9 @@ module Yasm
 
         # Verify that the action is possible given the current state
         if state_container.state.class.final?
-          raise "We're sorry, but the current state `#{state_container.state}` is final. It does not accept any actions."
+          raise Yasm::FinalStateException, "We're sorry, but the current state `#{state_container.state}` is final. It does not accept any actions."
         elsif !state_container.state.class.is_allowed?(action.class)
-          raise "We're sorry, but the action `#{action.class}` is not possible given the current state `#{state_container.state}`." 
+          raise Yasm::InvalidActionException, "We're sorry, but the action `#{action.class}` is not possible given the current state `#{state_container.state}`." 
         end
 
         change_state :to => action.triggers.to_class, :on => state_container if action.triggers 

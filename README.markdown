@@ -93,7 +93,7 @@ invalid actions to the context, `Yasm` will raise an exception.
       #==> Waiting
 
     vending_machine.do! RetrieveSelection
-      #==> RuntimeError: We're sorry, but the action `RetrieveSelection` 
+      #==> InvalidActionException: We're sorry, but the action `RetrieveSelection` 
            is not possible given the current state `Waiting`.
 
     vending_machine.do! InputMoney
@@ -219,7 +219,7 @@ to work again after that. You can use the `final!` macro on a state to denote th
     vending_machine.do! TossOffBuilding
 
     vending_machine.do! MakeSelection.new(SnickersBar)
-    #==> RuntimeError: We're sorry, but the current state `Obliterated` is final. It does not accept any actions 
+    #==> FinalStateException: We're sorry, but the current state `Obliterated` is final. It does not accept any actions 
 
 
 

@@ -67,7 +67,7 @@ describe Yasm::Manager do
           :state_container => @vending_machine.state, 
           :actions => [PlugIn]
         )
-      }.should raise_exception("We're sorry, but the action `PlugIn` is not possible given the current state `On`.")
+      }.should raise_exception(Yasm::InvalidActionException, "We're sorry, but the action `PlugIn` is not possible given the current state `On`.")
 
       proc { 
         Yasm::Manager.execute(
@@ -83,7 +83,7 @@ describe Yasm::Manager do
           :state_container => @vending_machine.state,
           :actions => [Destroy, PlugIn]
         )
-      }.should raise_exception("We're sorry, but the current state `Destroyed` is final. It does not accept any actions.") 
+      }.should raise_exception(Yasm::FinalStateException, "We're sorry, but the current state `Destroyed` is final. It does not accept any actions.") 
     end
   end
 end

@@ -191,23 +191,23 @@ pay for our selection).
     v.state.value
       #==> Waiting
 
-/**/
-/*## Time Constraints*/
-/**/
-/*When you make a selection, a real vending machine takes a few seconds to actually vend the selection. If you attempt to retrieve your selection*/
-/*before the machine has finished vending it, you will fail. Plus, you'll look stupid. */
-/**/
-/*How can we model these real world time constraints? We can add time constraints onto our states using the `time_constraints` macro:*/
-/**/
-/*    class Vending*/
-/*      include Yasm::State*/
-/**/
-/*      time_constraints do*/
-/*        minimum 10.seconds*/
-/*        maximum 60.seconds, :action => DisplayError.new("Sorry, you're snickers bar got stuck.")*/
-/*      end*/
-/*    end*/
-/**/
+
+## Time Constraints
+
+When you make a selection, a real vending machine takes a few seconds to actually vend the selection. If you attempt to retrieve your selection
+before the machine has finished vending it, you will fail. Plus, you'll look stupid. 
+
+How can we model these real world time constraints? We can add time constraints onto our states using the `time_constraints` macro:
+
+    class Vending
+      include Yasm::State
+
+      time_constraints do
+        minimum 10.seconds
+        maximum 60.seconds, :action => DisplayError.new("Sorry, you're snickers bar got stuck.")
+      end
+    end
+
 
 
 ## PUBLIC DOMAIN

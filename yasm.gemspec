@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Parker"]
-  s.date = %q{2011-01-30}
+  s.date = %q{2011-02-12}
   s.description = %q{Breaks up states, actions, and contexts into seperate classes.moonmaster9000@gmail.com}
   s.email = %q{moonmaster9000@gmail.com}
   s.extra_rdoc_files = [
@@ -20,27 +20,43 @@ Gem::Specification.new do |s|
     "lib/yasm.rb",
     "lib/yasm/action.rb",
     "lib/yasm/context.rb",
+    "lib/yasm/context/anonymous_state_identifier.rb",
+    "lib/yasm/context/state_configuration.rb",
+    "lib/yasm/context/state_container.rb",
+    "lib/yasm/conversions.rb",
+    "lib/yasm/conversions/class.rb",
+    "lib/yasm/conversions/symbol.rb",
+    "lib/yasm/manager.rb",
     "lib/yasm/state.rb",
     "lib/yasm/version.rb",
     "yasm.gemspec"
   ]
   s.homepage = %q{http://github.com/moonmaster9000/yasm}
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
+  s.rubygems_version = %q{1.5.0}
   s.summary = %q{Yet Another State Machine. Pronounced "yaz-um."}
   s.test_files = [
     "spec/spec_helper.rb",
-    "spec/yasm/context_spec.rb"
+    "spec/yasm/context_spec.rb",
+    "spec/yasm/conversions_spec.rb",
+    "spec/yasm/manager_spec.rb",
+    "spec/yasm/state_container_spec.rb",
+    "spec/yasm/state_spec.rb"
   ]
 
   if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<activesupport>, ["~> 3.0"])
+      s.add_runtime_dependency(%q<i18n>, ["~> 0.5.0"])
     else
+      s.add_dependency(%q<activesupport>, ["~> 3.0"])
+      s.add_dependency(%q<i18n>, ["~> 0.5.0"])
     end
   else
+    s.add_dependency(%q<activesupport>, ["~> 3.0"])
+    s.add_dependency(%q<i18n>, ["~> 0.5.0"])
   end
 end
 

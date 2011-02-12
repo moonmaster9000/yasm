@@ -45,21 +45,25 @@ So, how do we use this vending machine? We'll need to create some actions first:
 
 And now we can run a simulation:
     
-    # Create our vending machine
     vending_machine = VendingMachine.new
-    puts vending_machine.state.value #==> Waiting
     
-    # Input money into our vending machine
+    vending_machine.state.value 
+      #==> Waiting
+    
     vending_machine.do! InputMoney
-    puts vending_machine.state.value #==> Waiting
     
-    # Make a selection
+    vending_machine.state.value 
+      #==> Waiting
+    
     vending_machine.do! MakeSelection
-    puts vending_machine.state.value #==> Vending
+    
+    vending_machine.state.value 
+      #==> Vending
 
-    # Retrieve our selection
     vending_machine.do! RetrieveSelection
-    puts vending_machine.state.value #==> Waiting
+    
+    vending_machine.state.value 
+      #==> Waiting
 
 There's some problems, though. Our simple state machine is a little too simple; someone could make a selection without inputing any money. 
 We need a way to limit the actions that can be applied to our vending machine based on it's current state. How do we do that? Let's redefine
@@ -77,9 +81,134 @@ our states, using the actions macro:
       actions :retrieve_selection
     end
 
-Now, when the vending machine is in the `Waiting` state, the only actions we can apply to it are `InputMoney` and `MakeSelection`.
+Now, when the vending machine is in the `Waiting` state, the only actions we can apply to it are `InputMoney` and `MakeSelection`. If we try to apply
+invalid actions to the context, `Yasm` will raise an exception. 
 
-...more coming soon...
+    vending_machine.state.value 
+      #==> Waiting
+
+    vending_machine.do! RetrieveSelection
+      #==> RuntimeError: We're sorry, but the action `RetrieveSelection` 
+           is not possible given the current state `Waiting`.
+
+    vending_machine.do! InputMoney
+
+    vending_machine.state.value 
+      #==> Waiting
+
+## Side Effects
+
+How can we take our simulation farther? A real vending machine would verify that when you make a selection, 
+you actually have input enough money to pay for that selection. How can we model this? 
+
+For starters, we'll need to add a property to our `VendingMachine` 
+that lets us keep track of how much money was input. We'll also need to initialize our `InputMoney` actions with an amount.
+
+    class VendingMachine
+      include Yasm::Context
+      start :waiting
+
+      attr_accessor :amount_input
+
+      def initialize
+        @amount_input = 0
+      end
+    end 
+
+    class InputMoney
+      include Yasm::Action
+
+      def initialize(amount_input)
+        @amount_input = amount_input
+      end
+
+      def execute
+        context.amount_input += @amount_input
+      end
+    end
+
+Notice I defined the `execute` method on the action. This is the method that gets run whenever an action gets applied to a state container 
+(e.g., `vending_machine.do! InputMoney`). This is where you create side effects. 
+
+Now we can try out adding money into our vending machine: 
+    
+    vending_machine.amount_input
+      # ==> 0
+
+    vending_machine.do! InputMoney.new(10)
+
+    vending_machine.amount_input
+      # ==> 10
+
+As for verifying that we have input enough money to pay for the selection we've chosen, we'll need to create an item, then add that to our `MakeSelection` class:
+
+    class SnickersBar
+      def self.price; 30; end
+    end
+
+    class MakeSelection
+      include Yasm::Action
+
+      def initialize(selection)
+        @selection = selection
+      end
+
+      def execute
+        if context.amount_input >= @selection.price
+          trigger Vending
+        else
+          raise "We're sorry, but you have not input enough money for a #{@selection}"
+        end
+      end
+    end
+
+Notice that we called the `trigger` method inside the `execute` method instead of calling the `triggers` macro on the action. This way,
+we can conditionally move to the next logical state only when our conditions have been met (in this case, that we've input enough money to
+pay for our selection). 
+
+    v = VendingMachine.new
+
+    v.amount_input 
+      #==> 0
+
+    v.do! MakeSelection.new(SnickersBar)
+      #==> RuntimeError: We're sorry, but you have not input enough money for a SnickersBar
+
+    v.do! InputMoney.new(10)
+
+    v.do! MakeSelection.new(SnickersBar)
+      #==> RuntimeError: We're sorry, but you have not input enough money for a SnickersBar
+
+    v.do! InputMoney.new(20)
+
+    v.do! MakeSelection.new(SnickersBar)
+    
+    v.state.value 
+      #==> Vending
+
+    v.do! RetrieveSelection
+
+    v.state.value
+      #==> Waiting
+
+/**/
+/*## Time Constraints*/
+/**/
+/*When you make a selection, a real vending machine takes a few seconds to actually vend the selection. If you attempt to retrieve your selection*/
+/*before the machine has finished vending it, you will fail. Plus, you'll look stupid. */
+/**/
+/*How can we model these real world time constraints? We can add time constraints onto our states using the `time_constraints` macro:*/
+/**/
+/*    class Vending*/
+/*      include Yasm::State*/
+/**/
+/*      time_constraints do*/
+/*        minimum 10.seconds*/
+/*        maximum 60.seconds, :action => DisplayError.new("Sorry, you're snickers bar got stuck.")*/
+/*      end*/
+/*    end*/
+/**/
+
 
 ## PUBLIC DOMAIN
 

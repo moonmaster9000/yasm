@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{yasm}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Parker"]
-  s.date = %q{2011-02-12}
+  s.date = %q{2011-02-13}
   s.description = %q{Breaks up states, actions, and contexts into seperate classes.moonmaster9000@gmail.com}
   s.email = %q{moonmaster9000@gmail.com}
   s.extra_rdoc_files = [
@@ -26,6 +26,10 @@ Gem::Specification.new do |s|
     "lib/yasm/conversions.rb",
     "lib/yasm/conversions/class.rb",
     "lib/yasm/conversions/symbol.rb",
+    "lib/yasm/exceptions.rb",
+    "lib/yasm/exceptions/final_state_exception.rb",
+    "lib/yasm/exceptions/invalid_action_exception.rb",
+    "lib/yasm/exceptions/time_limit_not_yet_reached.rb",
     "lib/yasm/manager.rb",
     "lib/yasm/state.rb",
     "lib/yasm/version.rb",

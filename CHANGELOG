@@ -1,0 +1,4 @@
+v0.0.2
+  
+  -- feature: minimum/maximum time limits on states. (see the `State Timers` section in the README).
+  -- feature: exceptions are now subclassed, so that you can easily catch them. 

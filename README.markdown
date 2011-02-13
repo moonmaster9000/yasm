@@ -219,8 +219,67 @@ to work again after that. You can use the `final!` macro on a state to denote th
     vending_machine.do! TossOffBuilding
 
     vending_machine.do! MakeSelection.new(SnickersBar)
-    #==> FinalStateException: We're sorry, but the current state `Obliterated` is final. It does not accept any actions 
+    #==> Yasm::FinalStateException: We're sorry, but the current state `Obliterated` is final. It does not accept any actions. 
 
+
+## State Timers
+
+When a vending machine vends an item, it takes about 10 seconds for the item to work it's way off the rack and fall to the bottom. We can simulate this
+by placing a `minimum` constraint on the `Vending` state. 
+
+    class Vending
+      include Yasm::State
+
+      minimum 10.seconds
+    end
+
+
+Now, when we go into the vending state, we won't be able to retrieve our selection until 10 seconds have passed. 
+
+    vending_machine.do! MakeSelection.new(SnickersBar)
+
+    vending_machine.state.value
+      #==> Vending
+
+    vending_machine.do! RetrieveSelection
+      #==> Yasm::TimeLimitNotYetReached: We're sorry, but the time limit on the state `Vending` has not yet been reached. 
+
+    sleep 10
+
+    vending_machine.do! RetrieveSelection
+
+    vending_machine.state.value
+      #==> Waiting
+
+You can also create maximum time limits. For example, suppose we want our vending machine to self destruct, out of frustration, if it goes
+an entire minute without any action.
+
+    class Waiting
+      include Yasm::State
+
+      maximum 1.minute, :action => :self_destruct
+    end
+
+    class SelfDestruct
+      include Yasm::Action
+
+      triggers :obliterated
+
+      def execute
+        puts "KABOOM!"
+      end
+    end
+
+Now, if we create a vending machine, then wait at least a minute, next time we try to do something to it, it will execute the `SelfDestruct` action.
+
+
+    v = VendingMachine.new
+    
+    sleep 60
+    
+    v.do! InputMoney.new(10)
+      #==> "KABOOM!"
+      #==> Yasm::FinalStateException: We're sorry, but the current state `Obliterated` is final. It does not accept any actions. 
 
 
 ## PUBLIC DOMAIN

@@ -69,4 +69,42 @@ describe Yasm::State do
       state.reached_minimum_time_limit?
     end
   end
+
+  describe "##maximum" do
+    it "should require both a time limit and an action" do
+      proc { TestState.maximum }.should raise_exception(ArgumentError)
+      proc { TestState.maximum 10.seconds }.should raise_exception(ArgumentError)
+      proc { TestState.maximum 10.seconds, :action => :action1 }.should_not raise_exception
+    end
+
+    it "should store the time limit and action" do
+      TestState.maximum 20.seconds, :action => :action2
+      TestState.maximum_duration.should == 20.seconds
+      TestState.maximum_duration_action.should == Action2
+    end
+  end
+
+  describe "##passed_maximum_time_limit?" do
+    it "should return false if no time limit has been set" do
+      class UnlimitedState
+        include Yasm::State
+      end
+
+      UnlimitedState.new.passed_maximum_time_limit?.should be_false
+    end
+
+    it "should return true if a time limit was set, and that limit has been passed" do
+      class LimitedState
+        include Yasm::State
+
+        maximum 10.seconds, :action => :action2
+      end
+
+      s = LimitedState.new
+      s.instantiated_at = Time.now
+      ten_seconds_from_now = 10.seconds.from_now
+      Time.stub!(:now).and_return ten_seconds_from_now
+      s.passed_maximum_time_limit?.should be_true
+    end
+  end
 end

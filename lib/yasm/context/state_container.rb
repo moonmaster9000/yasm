@@ -20,6 +20,8 @@ module Yasm
       end
 
       def do!(*actions)
+        actions = [self.state.class.maximum_duration_action] + actions if self.state.passed_maximum_time_limit?
+
         Yasm::Manager.execute(
           :context => context, 
           :state_container => self,

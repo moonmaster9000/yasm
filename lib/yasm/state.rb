@@ -38,6 +38,20 @@ module Yasm
       def minimum_duration
         @state_minimum_duration
       end
+
+      def maximum(maximum_duration, action_hash)
+        @maximum_duration = maximum_duration
+        @maximum_duration_action = action_hash[:action]
+      end
+
+      def maximum_duration
+        @maximum_duration
+      end
+
+      def maximum_duration_action
+        return @maximum_duration_action.call if @maximum_duration_action.respond_to? :call
+        @maximum_duration_action.to_class
+      end
     end
     
     attr_accessor :instantiated_at
@@ -49,6 +63,11 @@ module Yasm
     def reached_minimum_time_limit?
       return true unless self.class.minimum_duration 
       (Time.now - instantiated_at) >= self.class.minimum_duration 
+    end
+
+    def passed_maximum_time_limit?
+      return false unless self.class.maximum_duration
+      (Time.now - instantiated_at) >= self.class.maximum_duration
     end
   end
 end

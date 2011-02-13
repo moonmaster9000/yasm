@@ -1,4 +1,5 @@
 require 'active_support/core_ext/string'
+require 'active_support/time'
 require 'yasm/exceptions'
 require 'yasm/conversions'
 require 'yasm/manager'

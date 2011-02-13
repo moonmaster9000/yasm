@@ -45,11 +45,8 @@ module Yasm
     
     def state_container(id)
       unless state_containers[id]
-        state_containers[id] = 
-          StateContainer.new(
-            :context => self, 
-            :state   => self.class.state_configurations[id].start_state.to_class.new
-          )
+        state_containers[id] = StateContainer.new :context => self 
+        Yasm::Manager.change_state :to => self.class.state_configurations[id].start_state, :on => state_containers[id]
       end
 
       state_containers[id]

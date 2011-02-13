@@ -5,9 +5,17 @@ module Yasm
     def change_state(options)
       new_state       = options[:to]
       state_container = options[:on]
+      
+      raise(
+        Yasm::TimeLimitNotYetReached,
+        "We're sorry, but the time limit on the state `#{state_container.state}` has not yet been reached."
+      ) if state_container.state and !state_container.state.reached_minimum_time_limit?
+      
       new_state = new_state.to_class if new_state.respond_to? :to_class
+      new_state = new_state.new
+      new_state.instantiated_at = Time.now
 
-      state_container.state = new_state.new
+      state_container.state = new_state
     end
     
     def execute(options)

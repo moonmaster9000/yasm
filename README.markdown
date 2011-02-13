@@ -101,7 +101,8 @@ invalid actions to the context, `Yasm` will raise an exception.
     vending_machine.state.value 
       #==> Waiting
 
-## Side Effects
+
+### Side Effects
 
 How can we take our simulation farther? A real vending machine would verify that when you make a selection, 
 you actually have input enough money to pay for that selection. How can we model this? 
@@ -197,7 +198,7 @@ pay for our selection).
       #==> Waiting
 
 
-## End states
+### End states
 
 Sometimes, a state is final. Like, what if, out of frustration, you threw the vending machine off the top of a 10 story building? It's probably not going
 to work again after that. You can use the `final!` macro on a state to denote that this is the end.
@@ -222,7 +223,7 @@ to work again after that. You can use the `final!` macro on a state to denote th
     #==> Yasm::FinalStateException: We're sorry, but the current state `Obliterated` is final. It does not accept any actions. 
 
 
-## State Timers
+### State Timers
 
 When a vending machine vends an item, it takes about 10 seconds for the item to work it's way off the rack and fall to the bottom. We can simulate this
 by placing a `minimum` constraint on the `Vending` state. 

@@ -62,7 +62,7 @@ module Yasm
           
           # update the state
           Yasm::Manager.change_state(
-            :to => action.class.triggers || @state.class,
+            :to => action.class.trigger_state || @state.class,
             :on => self,
             :at => @state.instantiated_at + @state.class.maximum_duration
           )

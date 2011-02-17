@@ -36,11 +36,11 @@ module Yasm
 
         # Verify that the action is possible given the current state
         if !@state.reached_minimum_time_limit?
-          raise Yasm::TimeLimitNotYetReached, "We're sorry, but the time limit on the state `#{state_container.state}` has not yet been reached."
+          raise Yasm::TimeLimitNotYetReached, "We're sorry, but the time limit on the state `#{@state}` has not yet been reached."
         elsif @state.class.final?
-          raise Yasm::FinalStateException,    "We're sorry, but the current state `#{state_container.state}` is final. It does not accept any actions."
+          raise Yasm::FinalStateException,    "We're sorry, but the current state `#{@state}` is final. It does not accept any actions."
         elsif !@state.class.is_allowed?(action.class)
-          raise Yasm::InvalidActionException, "We're sorry, but the action `#{action.class}` is not possible given the current state `#{state_container.state}`." 
+          raise Yasm::InvalidActionException, "We're sorry, but the action `#{action.class}` is not possible given the current state `#{@state}`." 
         end
 
         action = Yasm::Manager.setup_action :action => action, :context => context, :state_container => self

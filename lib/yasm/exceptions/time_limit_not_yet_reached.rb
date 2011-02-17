@@ -1,4 +1,3 @@
 module Yasm
-  class TimeLimitNotYetReached < RuntimeError
-  end
+  class TimeLimitNotYetReached < RuntimeError; end
 end

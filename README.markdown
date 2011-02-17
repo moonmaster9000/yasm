@@ -283,6 +283,82 @@ Now, if we create a vending machine, then wait at least a minute, next time we t
       #==> Yasm::FinalStateException: We're sorry, but the current state `Obliterated` is final. It does not accept any actions. 
 
 
+## The Lazy Domino Effect
+
+The maximum time limit on a state can cause a domino effect. For example, suppose the start state for your context has a max time limit. And the action that
+runs when that time limit is reached transitions to a state with another max time limit. And so on. Now suppose you instantiate your context, and wait a reeeeealy 
+long time. Like, long enough to cause a state transition domino effect. Let's model this with a traffic light system: 
+
+    class TrafficLight
+      include Yasm::Context
+
+      start :green
+    end
+
+    class Green
+      include Yasm::State
+
+      maximum 10.seconds, :action => :transition_to_yellow
+    end
+
+    class TransitionToYellow
+      include Yasm::Action
+      
+      triggers :yellow
+
+      def execute
+        puts "transitioning to yellow."
+      end
+    end
+
+    class Yellow
+      include Yasm::State
+
+      maximum 3.seconds, :action => :transition_to_red
+    end
+
+    class TransitionToRed
+      include Yasm::Action
+
+      triggers :red
+      
+      def execute
+        puts "transitioning to red."
+      end
+    end
+
+    class Red
+      include Yasm::State
+
+      maximum 13.seconds, :action => :transition_to_green
+    end
+
+    class TransitionToGreen
+      include Yasm::Action
+
+      triggers :green
+      
+      def execute
+        puts "transitioning to green."
+      end
+    end
+
+    t = TrafficLight.new
+
+    puts t.state.value
+      #==> Green
+
+    sleep 30
+
+    t.state.value
+      #==> "transitioning to yellow."
+      #==> "transitioning to red."
+      #==> "transitioning to green."
+      #==> Green 
+
+Notice that this domino effect happened lazily when you call the `do!` method, or the `context.state.value` methods. Quite nice for systems where
+you persist your state to a db. 
+
 ## PUBLIC DOMAIN
 
 This software is committed to the public domain. No license. No copyright. DO ANYTHING! 

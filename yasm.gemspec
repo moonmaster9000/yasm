@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{yasm}
-  s.version = "0.0.2"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Parker"]
-  s.date = %q{2011-02-13}
+  s.date = %q{2011-02-17}
   s.description = %q{Breaks up states, actions, and contexts into seperate classes.moonmaster9000@gmail.com}
   s.email = %q{moonmaster9000@gmail.com}
   s.extra_rdoc_files = [
@@ -39,14 +39,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.5.0}
   s.summary = %q{Yet Another State Machine. Pronounced "yaz-um."}
-  s.test_files = [
-    "spec/spec_helper.rb",
-    "spec/yasm/context_spec.rb",
-    "spec/yasm/conversions_spec.rb",
-    "spec/yasm/manager_spec.rb",
-    "spec/yasm/state_container_spec.rb",
-    "spec/yasm/state_spec.rb"
-  ]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

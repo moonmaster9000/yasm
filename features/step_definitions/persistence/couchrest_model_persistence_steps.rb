@@ -4,7 +4,9 @@ Given /^a class that inherits from CouchRest::Model::Base$/ do
 end
 
 When /^I mix Yasm::Context into it$/ do
-  TestYasmCouchPersistence.include Yasm::Context
+  class TestYasmCouchPersistence
+    include Yasm::Context
+  end
 end
 
 Then /^Yasm::Persistence::CouchRest::Model should be autoincluded as well$/ do

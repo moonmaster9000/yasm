@@ -1,3 +1,4 @@
+@couch
 Feature: CouchRest::Model Persistance
   As a CouchDB hacker
   I want the states on my CouchRest::Mode::Base context persisted to CouchDB
@@ -7,3 +8,15 @@ Feature: CouchRest::Model Persistance
     Given a class that inherits from CouchRest::Model::Base
     When I mix Yasm::Context into it
     Then Yasm::Persistence::CouchRest::Model should be autoincluded as well
+
+  Scenario: Saving state to CouchRest::Model::Base derived classes
+    Given a couchrest model context
+    When I save that context to CouchDB
+    Then the states should be saved in the document
+
+  Scenario: Loading state from CouchRest::Model::Base derived classes
+    Given a couchrest model context with state saved in the database
+    When I load that context
+    Then the states should be restored
+    And the states should be fast forwarded
+

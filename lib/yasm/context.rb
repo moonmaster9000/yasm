@@ -2,7 +2,7 @@ module Yasm
   module Context
     def self.included(base)
       base.extend ClassMethods
-      if base.ancestors.include? CouchRest::Model::Base
+      if base.ancestors.include?(CouchRest::Model::Base) and !base.ancestors.include?(Yasm::Persistence::CouchRest::Model)
         base.send :include, Yasm::Persistence::CouchRest::Model
       end
     end

@@ -7,6 +7,7 @@ module Yasm
           base.before_save :save_yasm_states
           class << base
             alias_method_chain :get, :load_yasm_states
+            alias_method_chain :find, :load_yasm_states
           end
         end
         
@@ -20,8 +21,11 @@ module Yasm
                 :at => Time.parse(doc["yasm"]["states"][state_name.to_s]["instantiated_at"])
               )
             end if doc["yasm"] and doc["yasm"]["states"]
+            doc.fast_forward
             doc
           end
+
+          alias :find_with_load_yasm_states :get_with_load_yasm_states
         end
         
         private

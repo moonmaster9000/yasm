@@ -12,7 +12,7 @@ module Yasm
       def value; state; end
 
       def state
-        check_maximum
+        fast_forward
         @state
       end
 
@@ -32,7 +32,7 @@ module Yasm
 
       private
       def fire!(action)
-        check_maximum
+        fast_forward
 
         # Verify that the action is possible given the current state
         if !@state.reached_minimum_time_limit?
@@ -51,13 +51,13 @@ module Yasm
         Yasm::Manager.execute_action action
       end
 
-      def check_maximum
+      def fast_forward
         while @state.passed_maximum_time_limit?
           # setup the action that should be performed when a state has lasted too long
           action = Yasm::Manager.setup_action(
-            :action => @state.class.maximum_duration_action,
-            :context => context,
-            :state_container => self
+            :action           => @state.class.maximum_duration_action,
+            :context          => context,
+            :state_container  => self
           )
           
           # update the state

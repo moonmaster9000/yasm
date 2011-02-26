@@ -41,6 +41,10 @@ module Yasm
       state_container ANONYMOUS_STATE
     end
 
+    def fast_forward
+      self.class.state_configurations.keys.each { |state_name| state_container(state_name).value }
+    end
+
     private
     def state_containers
       @state_containers ||= {}

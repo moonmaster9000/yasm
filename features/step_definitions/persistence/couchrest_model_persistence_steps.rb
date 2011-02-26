@@ -73,7 +73,7 @@ end
 When /^I load that context$/ do
   ten_minutes_from_now = 10.minutes.from_now
   Time.stub(:now).and_return ten_minutes_from_now
-  @couch_context = CouchContext.get @couch_context.id
+  @couch_context = CouchContext.find @couch_context.id
 end
 
 Then /^the states should be restored$/ do

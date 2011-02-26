@@ -359,6 +359,28 @@ long time. Like, long enough to cause a state transition domino effect. Let's mo
 Notice that this domino effect happened lazily when you call the `do!` method, or the `context.state.value` methods. Quite nice for systems where
 you persist your state to a db. 
 
+
+## Persistence
+
+How do you persist your state to a database? YASM will automatically persist/load your states to/from the database; it supports (or plans to support) the following ORMs:
+
+* couchrest_model (as of version 0.0.4)
+* mongoid (coming soon)
+* active_record (coming soon)
+
+For example, let's suppose our vending machine context was actually a CouchDB document, modelled with CouchRest::Model:
+
+    class VendingMachine < CouchRest::Model::Base
+      include Yasm::Context
+
+      start :waiting
+    end
+
+    #.....
+
+By simply mixing Yasm::Context into the document, our states will be automatically persisted to the database and loaded from the database.
+
+
 ## PUBLIC DOMAIN
 
 This software is committed to the public domain. No license. No copyright. DO ANYTHING! 

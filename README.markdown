@@ -381,6 +381,161 @@ For example, let's suppose our vending machine context was actually a CouchDB do
 By simply mixing Yasm::Context into the document, our states will be automatically persisted to the database and loaded from the database.
 
 
+## Anonymous and Named States
+
+Up till now, we've been utilizing the anonymous state on our context. In other words, because we didn't wrap our `start :waiting` inside a `state` call, YASM
+assumed that we were simply going to be using the anonymous state on our class. Also, when we've called the `do!` method, we've called it directly on our context,
+which again assumes that you're attempting to apply an action to the anonymous state on your context. 
+
+What's an example of a named state? Perhaps we'd like to manage the electricity on our vending machine with a state machine. To do so, we'd simply: 
+
+    class VendingMachine
+      include Yasm::Context
+
+      start :waiting
+
+      state(:electricity) do
+        start :on
+      end
+    end
+
+    class Waiting;  include Yasm::State; end
+    class Vending;  include Yasm::State; end
+    class On;       include Yasm::State; end
+    class Off;      include Yasm::State; end
+
+    class Unplug
+      include Yasm::Action
+
+      triggers :off
+    end
+
+    class Plugin
+      include Yasm::Action
+
+      triggers :on
+    end
+
+    class Select
+      include Yasm::Action
+
+      triggers :vending
+    end
+
+Now our VendingMachine has two managed states: the anonymous state (that start in the `Waiting` state), and the "electricity" state (that starts in the `On` state).
+
+We can apply actions to each of these states independently: 
+
+    v = VendingMachine.new
+    
+    puts v.state.value 
+      #==> Waiting
+    
+    puts v.electricity.value
+      #==> On
+   
+    v.do! Select
+    
+    puts v.state.value 
+      #==> Vending
+ 
+    v.electricity.do! Unplug
+
+    puts v.electricity.value
+      #==> Off
+    
+## Action Callbacks
+
+How do you run a method before or after an action is applied to a yasm state within your context? Yasm::Context gives you the following two callback macros for this purpose: 
+`before_action` and `after_action`. They each accept two parameters: a symbol representing the method on the context you'd like called, and an options hash, where you 
+can specify `:only` or `:except` constraints. 
+
+For example: 
+
+    class Human
+      include Yasm::Context
+
+      start :alive
+      before_action :weigh_options, :except => :jump_off_building
+      after_action :consider_results, :only => :jump_off_building
+
+      private
+      def weigh_options
+        puts "You could, alternatively, jump off a building."
+      end
+
+      def consider_results
+        puts "Splendid!"
+      end
+    end
+
+    class Alive; include Yasm::State; end
+    class Dead;  include Yasm::State; end
+    
+    class GoToWork
+      include Yasm::Action
+    end
+    
+    class JumpOffBuilding
+      include Yasm::Action
+      triggers :dead
+
+      def execute
+        puts "Weeeeeee!"
+      end
+    end
+
+Now, when we apply actions to the anonymous state, before and after actions will run when appropriate:
+
+    you = Human.new
+
+    you.do! GoToWork
+      #==> "You could, alternatively, jump off a building."
+
+    you.do! JumpOffBuilding
+      #==> "Weeeeeee!"
+      #==> "Splendid!"
+
+Just as you can use `before_action` and `after_action` with the anonymous state, you can use it with named states as well:
+
+    class VendingMachine
+      include Yasm::Context
+
+      state(:electricity) do
+        start :on
+        before_action :warn, :only => :unplug
+        after_action  :sigh
+      end
+
+      private
+      def warn
+        puts "Wait! Don't unplug me!!!"
+      end
+
+      def sigh
+        puts "sigh...."
+      end
+    end
+
+    class On; include Yasm::State; end
+    class Off; include Yasm::State; end
+
+    class Unplug
+      include Yasm::Action
+      triggers :off
+
+      def execute
+        puts "unplugging...."
+      end
+    end
+
+    v = VendingMachine.new
+
+    v.electricity.do! Unplug
+      #==> "Wait! Don't unplug me!!!"
+      #==> "unplugging...."
+      #==> "sigh...."
+
 ## PUBLIC DOMAIN
 
 This software is committed to the public domain. No license. No copyright. DO ANYTHING! 

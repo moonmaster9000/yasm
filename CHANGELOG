@@ -1,3 +1,9 @@
+v0.0.5 
+  -- feature: before_action and after_action callbacks on state containers (see README).
+
+v0.0.4
+  -- feature: couchrest_model persistence (see README). 
+
 v0.0.2
   
   -- feature: minimum/maximum time limits on states. (see the `State Timers` section in the README).

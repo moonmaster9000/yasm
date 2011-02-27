@@ -1,23 +1,17 @@
-class BeforeActionCallbackContext
-  include Yasm::Context
-  start :action_callback_state
-end
-
-class ActionCallbackContext
-  include Yasm::Context
-  start :action_callback_state
-end
-
-class ActionCallbackState
-  include Yasm::State
-end
-
-class Action1; include Yasm::Action; end
-class Action2; include Yasm::Action; end
-class Action3; include Yasm::Action; end
-class Action4; include Yasm::Action; end
-
 Given /^a context that I intend to attach action callbacks to$/ do
+  class ActionCallbackContext
+    include Yasm::Context
+    start :action_callback_state
+  end
+
+  class ActionCallbackState
+    include Yasm::State
+  end
+
+  class Action1; include Yasm::Action; end
+  class Action2; include Yasm::Action; end
+  class Action3; include Yasm::Action; end
+  class Action4; include Yasm::Action; end
 end
 
 When /^I create an after action callback with no constraints$/ do
@@ -101,6 +95,10 @@ end
 
 
 Given /^a context that I intend to attach before action callbacks to$/ do
+  class BeforeActionCallbackContext
+    include Yasm::Context
+    start :action_callback_state
+  end
 end
 
 When /^I create a before action callback with no constraints$/ do
@@ -117,6 +115,15 @@ When /^I create a before action callback with no constraints$/ do
       @counter += 1
     end
   end
+
+  class ActionCallbackState
+    include Yasm::State
+  end
+
+  class Action1; include Yasm::Action; end
+  class Action2; include Yasm::Action; end
+  class Action3; include Yasm::Action; end
+  class Action4; include Yasm::Action; end
 end
 
 Then /^that callback should be called before all actions$/ do

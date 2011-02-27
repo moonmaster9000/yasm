@@ -8,20 +8,26 @@ module Yasm
     end
 
     module ClassMethods
+      def after_action(method, options={})
+        state_configuration(ANONYMOUS_STATE).after_action method, options
+      end
+
+      def before_action(method, options={})
+        state_configuration(ANONYMOUS_STATE).before_action method, options
+      end
+      
       # for a simple, anonymous state 
       def start(state)
-        state_configurations[ANONYMOUS_STATE] = StateConfiguration.new
-        state_configurations[ANONYMOUS_STATE].start state
+        state_configuration(ANONYMOUS_STATE).start state
       end
 
       # for a named state
       def state(name, &block)
         raise ArgumentError, "The state name must respond to `to_sym`" unless name.respond_to?(:to_sym)
         name = name.to_sym
-        state_configurations[name] = StateConfiguration.new 
-        state_configurations[name].instance_eval &block
+        state_configuration(name).instance_eval &block
         
-        raise "You must provide a start state for #{name}" unless state_configurations[name].start_state
+        raise "You must provide a start state for #{name}" unless state_configuration(name).start_state
 
         define_method(name) { state_container name }
       end
@@ -29,6 +35,11 @@ module Yasm
       # state configuration metadata
       def state_configurations
         @state_configurations ||= {}
+      end
+
+      private
+      def state_configuration(name)
+        state_configurations[name] ||= StateConfiguration.new
       end
     end
 
@@ -52,7 +63,7 @@ module Yasm
     
     def state_container(id)
       unless state_containers[id]
-        state_containers[id] = StateContainer.new :context => self 
+        state_containers[id] = StateContainer.new :context => self, :name => id 
         Yasm::Manager.change_state :to => self.class.state_configurations[id].start_state, :on => state_containers[id]
       end
 

@@ -7,6 +7,7 @@ module Yasm
       def initialize(options)
         @context = options[:context]
         @state   = options[:state]
+        @name    = options[:name]
       end
 
       def value; state; end
@@ -26,7 +27,9 @@ module Yasm
 
       def do!(*actions)
         actions.each do |action|
+          run_before_action_hooks action
           fire! action
+          run_after_action_hooks action
         end
       end
 
@@ -70,6 +73,26 @@ module Yasm
           # execute the action
           Yasm::Manager.execute_action action
         end
+      end
+
+      def run_before_action_hooks(action)
+        action = symbol action 
+        context.class.state_configurations[@name].before_actions.each do |action_hook|
+          context.send action_hook.method if action_hook.applicable?(action)
+        end
+      end
+
+      def run_after_action_hooks(action)
+        action = symbol action 
+        context.class.state_configurations[@name].after_actions.each do |action_hook|
+          context.send action_hook.method if action_hook.applicable?(action)
+        end
+      end
+
+      def symbol(obj)
+        obj = obj.class unless obj.class == Class
+        obj = obj.to_sym
+        obj
       end
     end
   end

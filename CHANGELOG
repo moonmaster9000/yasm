@@ -1,3 +1,6 @@
+v0.0.6
+  -- bug fix: check to see if CouchRest is defined? before trying to see if base is ancestor of it
+
 v0.0.5 
   -- feature: before_action and after_action callbacks on state containers (see README).
 

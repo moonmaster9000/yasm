@@ -1,3 +1,6 @@
+v0.0.7
+  -- no API changes. But now uses the "symbolism" gem for class -> symbol -> class conversions.
+
 v0.0.6
   -- bug fix: check to see if CouchRest is defined? before trying to see if base is ancestor of it
 

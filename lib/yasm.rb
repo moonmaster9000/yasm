@@ -1,7 +1,6 @@
-require 'active_support/core_ext/string'
 require 'active_support/time'
+require 'symbolism'
 require 'yasm/exceptions'
-require 'yasm/conversions'
 require 'yasm/manager'
 require 'yasm/version'
 require 'yasm/state'

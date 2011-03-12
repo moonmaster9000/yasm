@@ -1,3 +1,6 @@
+v0.0.8
+  -- requires symbolism 0.0.1 or greater
+
 v0.0.7
   -- no API changes. But now uses the "symbolism" gem for class -> symbol -> class conversions.
 

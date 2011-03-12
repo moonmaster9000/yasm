@@ -1,6 +1,5 @@
 pkg/
 *.sw?
 .rvmrc
-Gemfile.lock
 .bundle/
 *.gem

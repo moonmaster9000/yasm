@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   
   s.add_dependency(%q<activesupport>, ["~> 3.0"])
   s.add_dependency(%q<i18n>, ["~> 0.5.0"])
-  s.add_dependency(%q<symbolism>, ["~> 0.0.0"])
+  s.add_dependency(%q<symbolism>, ["~> 0.0.1"])
   s.add_development_dependency(%q<couchrest_model>, [">= 0"])
   s.add_development_dependency(%q<cucumber>, ["~> 0.10.0"])
 end

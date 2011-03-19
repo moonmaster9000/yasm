@@ -20,8 +20,8 @@ module Yasm
                 :on => doc.send(:state_container, state_name.to_sym), 
                 :at => Time.parse(doc["yasm"]["states"][state_name.to_s]["instantiated_at"])
               )
-            end if doc["yasm"] and doc["yasm"]["states"]
-            doc.fast_forward
+            end if doc and doc["yasm"] and doc["yasm"]["states"]
+            doc.fast_forward if doc
             doc
           end
 

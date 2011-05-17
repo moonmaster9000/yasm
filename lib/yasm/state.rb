@@ -54,6 +54,7 @@ module Yasm
       end
     end
     
+    attr_accessor :context
     attr_accessor :instantiated_at
 
     def to_s

@@ -19,6 +19,9 @@ Given /^a couchrest model context$/ do
     include Yasm::Context
 
     start :couch_state1
+    property :user
+
+    view_by :user
   end
   class CouchState1
     include Yasm::State
@@ -30,10 +33,11 @@ Given /^a couchrest model context$/ do
     include Yasm::Action
     triggers :couch_state2
   end
-  @couch_context = CouchContext.new
+  @couch_context = CouchContext.create! :user => "moonmaster9000"
 end
 
 When /^I save that context to CouchDB$/ do
+  @couch_context.save
   @couch_context.do! GoToState2
   @state_start_time = @couch_context.state.value.instantiated_at
   @couch_context.save

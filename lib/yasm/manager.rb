@@ -9,6 +9,7 @@ module Yasm
       
       new_state = get_instance new_state
       new_state.instantiated_at = state_time
+      new_state.context = state_container.context 
       state_container.state = new_state
     end
     

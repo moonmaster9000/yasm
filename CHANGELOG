@@ -1,3 +1,6 @@
+v0.0.10
+  -- you can now access the context from the state
+
 v0.0.8
   -- requires symbolism 0.0.1 or greater
 

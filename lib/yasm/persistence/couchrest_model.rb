@@ -34,7 +34,7 @@ module Yasm
           self["yasm"]["states"] ||= {}
           self.class.state_configurations.keys.each do |state_name|
             container = state_container state_name
-            self["yasm"]["states"][state_name] = {
+            self["yasm"]["states"][state_name.to_s] = {
               :class => container.value.class.to_s,
               :instantiated_at => container.value.instantiated_at
             }

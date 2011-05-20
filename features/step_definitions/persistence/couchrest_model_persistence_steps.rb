@@ -53,7 +53,10 @@ end
 
 Given /^a couchrest model context with state saved in the database$/ do
   class CouchContext < CouchRest::Model::Base
+    use_database YASM_COUCH_DB
     include Yasm::Context
+    property :user
+    view_by :user
 
     start :couch_state1
   end
@@ -68,16 +71,22 @@ Given /^a couchrest model context with state saved in the database$/ do
   end
   class GoToState2; include Yasm::Action; triggers :couch_state2; end
   class GoToState3; include Yasm::Action; triggers :couch_state3; end
-  @couch_context = CouchContext.new 
+  @couch_context = CouchContext.new :user => "moonmaster9000"
   @couch_context.do! GoToState2
   @state_start_time = @couch_context.state.value.instantiated_at
   @couch_context.save
 end
 
-When /^I load that context$/ do
+When /^I load that context via "([^\"]*)"$/ do |method|
   ten_minutes_from_now = 10.minutes.from_now
   Time.stub(:now).and_return ten_minutes_from_now
-  @couch_context = CouchContext.find @couch_context.id
+ 
+  case method
+    when "get"      then @couch_context = CouchContext.get @couch_context.id
+    when "find"     then @couch_context = CouchContext.find @couch_context.id
+    when "by_user"  then @couch_context = CouchContext.by_user(:key => @couch_context.user).first
+    else raise "Unknown Method!"
+  end
 end
 
 Then /^the states should be restored$/ do

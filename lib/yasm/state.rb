@@ -15,7 +15,7 @@ module Yasm
 
       def is_allowed?(action)
         return true if @allowed_actions.nil?
-        @allowed_actions.include? action.to_s.to_sym
+        @allowed_actions.map(&:to_class).include? action.to_class
       end
 
       def final!

@@ -6,14 +6,18 @@ module Yasm
           base.extend GetMethods
           base.before_save :save_yasm_states
           class << base
-            alias_method_chain :get, :load_yasm_states
-            alias_method_chain :find, :load_yasm_states
+            alias_method_chain :create_from_database, :load_yasm_states
           end
         end
         
         module GetMethods
-          def get_with_load_yasm_states(id, db = database)
-            doc = get_without_load_yasm_states id, db
+          def create_from_database_with_load_yasm_states(doc = {})
+            result = create_from_database_without_load_yasm_states doc
+            setup_document_state result
+          end
+          
+          private
+          def setup_document_state(doc)
             doc.class.state_configurations.keys.each do |state_name|
               Yasm::Manager.change_state(
                 :to => doc["yasm"]["states"][state_name.to_s]["class"].to_sym.to_class,
@@ -24,8 +28,6 @@ module Yasm
             doc.fast_forward if doc
             doc
           end
-
-          alias :find_with_load_yasm_states :get_with_load_yasm_states
         end
         
         private

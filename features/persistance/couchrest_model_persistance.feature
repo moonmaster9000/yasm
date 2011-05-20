@@ -14,9 +14,15 @@ Feature: CouchRest::Model Persistance
     When I save that context to CouchDB
     Then the states should be saved in the document
 
-  Scenario: Loading state from CouchRest::Model::Base derived classes
+  @focus
+  Scenario Outline: Loading state from CouchRest::Model::Base derived classes
     Given a couchrest model context with state saved in the database
-    When I load that context
+    When I load that context via "<method>"
     Then the states should be restored
     And the states should be fast forwarded
 
+    Examples:
+      |method|
+      |get|
+      |find|
+      |by_user|

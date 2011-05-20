@@ -1,3 +1,8 @@
+v0.0.11
+    -- bug fix: now, whether you're finding documents via get, find, or by_*, yasm state will be restored.
+    -- fixed a bug with namespaced action symbols
+    -- fixed a bug with two types of the same state getting loaded on initialization from the database
+
 v0.0.10
   -- you can now access the context from the state
 
